@@ -18,7 +18,7 @@ interface CartContextValue {
   subtotal: number;
   isOpen: boolean;
   setOpen: (open: boolean) => void;
-  add: (product: Product) => void;
+  add: (product: Product, qty?: number) => void;
   remove: (productId: string) => void;
   setQty: (productId: string, qty: number) => void;
   clear: () => void;
@@ -40,15 +40,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
       subtotal,
       isOpen,
       setOpen,
-      add: (product) => {
+      add: (product, qty = 1) => {
+        const safeQty = Math.max(1, Math.min(99, Math.floor(qty)));
         setLines((prev) => {
           const existing = prev.find((l) => l.product.id === product.id);
           if (existing) {
             return prev.map((l) =>
-              l.product.id === product.id ? { ...l, qty: l.qty + 1 } : l,
+              l.product.id === product.id
+                ? { ...l, qty: Math.min(99, l.qty + safeQty) }
+                : l,
             );
           }
-          return [...prev, { product, qty: 1 }];
+          return [...prev, { product, qty: safeQty }];
         });
         setOpen(true);
       },
@@ -59,7 +62,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
           qty <= 0
             ? prev.filter((l) => l.product.id !== productId)
             : prev.map((l) =>
-                l.product.id === productId ? { ...l, qty } : l,
+                l.product.id === productId
+                  ? { ...l, qty: Math.min(99, Math.floor(qty)) }
+                  : l,
               ),
         ),
       clear: () => setLines([]),
