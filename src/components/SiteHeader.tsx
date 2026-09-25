@@ -14,7 +14,7 @@ export function SiteHeader() {
             <Zap className="size-5" />
           </span>
           <span className="truncate font-display text-lg font-bold tracking-tight">
-            Voltra
+            gshoppy
           </span>
         </Link>
 

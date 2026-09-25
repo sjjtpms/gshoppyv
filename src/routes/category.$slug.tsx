@@ -1,7 +1,7 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { categories, getCategory, products } from "@/lib/products";
-import { ProductCard } from "@/components/ProductCard";
+import { categories, getCategory } from "@/lib/products";
+import { CatalogBrowser } from "@/components/CatalogBrowser";
 
 export const Route = createFileRoute("/category/$slug")({
   beforeLoad: ({ params }) => {
@@ -15,13 +15,13 @@ export const Route = createFileRoute("/category/$slug")({
       "Gadgets, phone accessories, projectors, charging gear and smart-home tech.";
     return {
       meta: [
-        { title: `${name} — Voltra` },
+        { title: `${name} — gshoppy` },
         { name: "description", content: description },
-        { property: "og:title", content: `${name} — Voltra` },
+        { property: "og:title", content: `${name} — gshoppy` },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: `${name} — Voltra` },
+        { name: "twitter:title", content: `${name} — gshoppy` },
         { name: "twitter:description", content: description },
       ],
     };
@@ -31,9 +31,9 @@ export const Route = createFileRoute("/category/$slug")({
 
 function CategoryPage() {
   const { slug } = Route.useParams();
-  const category = getCategory(slug)!;
+  const category = getCategory(slug);
+  if (!category) return null;
   const Icon = category.icon;
-  const items = products.filter((p) => p.category === category.slug);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10">
@@ -59,11 +59,7 @@ function CategoryPage() {
         </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {items.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      <div className="mt-8"><CatalogBrowser fixedCategory={category.slug} /></div>
 
       <div className="mt-10 flex flex-wrap gap-2 border-t pt-8">
         <span className="mr-2 py-1.5 text-sm font-medium text-muted-foreground">

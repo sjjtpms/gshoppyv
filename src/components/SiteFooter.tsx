@@ -11,7 +11,7 @@ export function SiteFooter() {
             <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
               <Zap className="size-4" />
             </span>
-            <span className="font-display text-base font-bold">Voltra</span>
+            <span className="font-display text-base font-bold">gshoppy</span>
           </div>
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
             Everyday gadgets, phone accessories, projectors, charging gear and

@@ -84,14 +84,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Voltra — Gadgets & Accessories Store" },
+      { title: "gshoppy — Gadgets & Accessories Store" },
       {
         name: "description",
         content:
           "Everyday gadgets, phone accessories, projectors, charging gear and smart-home tech.",
       },
-      { name: "author", content: "Voltra" },
-      { property: "og:title", content: "Voltra — Gadgets & Accessories Store" },
+      { name: "author", content: "gshoppy" },
+      { property: "og:title", content: "gshoppy — Gadgets & Accessories Store" },
       {
         property: "og:description",
         content:
@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@gshoppy" },
     ],
     links: [
       {

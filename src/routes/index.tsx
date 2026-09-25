@@ -1,8 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { ArrowRight, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { categories, products } from "@/lib/products";
-import { ProductCard } from "@/components/ProductCard";
+import { CatalogBrowser } from "@/components/CatalogBrowser";
 import { cn } from "@/lib/utils";
 import heroImg from "@/assets/hero.jpg";
 
@@ -10,14 +9,14 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Voltra — Gadgets & Accessories Store",
+        title: "gshoppy — Gadgets & Accessories Store",
       },
       {
         name: "description",
         content:
           "Shop everyday gadgets, phone accessories, projectors, charging gear and smart-home tech. Clean, curated and shipped fast.",
       },
-      { property: "og:title", content: "Voltra — Gadgets & Accessories Store" },
+      { property: "og:title", content: "gshoppy — Gadgets & Accessories Store" },
       {
         property: "og:description",
         content:
@@ -25,7 +24,7 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Voltra — Gadgets & Accessories Store" },
+      { name: "twitter:title", content: "gshoppy — Gadgets & Accessories Store" },
       {
         name: "twitter:description",
         content:
@@ -37,12 +36,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [active, setActive] = useState<string>("all");
-  const visible =
-    active === "all"
-      ? products
-      : products.filter((p) => p.category === active);
-
   return (
     <div>
       {/* Hero */}
@@ -91,7 +84,7 @@ function Index() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border shadow-xl">
+        <div className="overflow-hidden rounded-lg border shadow-xl">
           <img
             src={heroImg}
             alt="Flat-lay of gadgets: phone with wallet, earbuds, projector, cable, smart bulb and power bank"
@@ -137,38 +130,15 @@ function Index() {
 
       {/* Products */}
       <section id="shop" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
               Shop all gadgets
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {visible.length} product{visible.length === 1 ? "" : "s"}
-            </p>
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 sm:justify-end">
-            {[{ slug: "all", name: "All" }, ...categories].map((c) => (
-              <button
-                key={c.slug}
-                onClick={() => setActive(c.slug)}
-                className={cn(
-                  "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-                  active === c.slug
-                    ? "bg-foreground text-background"
-                    : "border bg-card text-muted-foreground hover:bg-accent hover:text-foreground",
-                )}
-              >
-                {c.name}
-              </button>
-            ))}
+            <p className="mt-1 text-sm text-muted-foreground">Search and filter all five collections.</p>
           </div>
         </div>
-
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {visible.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        <CatalogBrowser />
       </section>
     </div>
   );
