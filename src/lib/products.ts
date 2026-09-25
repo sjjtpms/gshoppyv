@@ -4,7 +4,7 @@ import { productImages } from "./product-images";
 export type CategorySlug = "everyday-gadgets" | "phone-accessories" | "projectors" | "charging-gear" | "smart-home";
 export type Compatibility = "Universal" | "Apple" | "Android" | "USB-C" | "Smart Home" | "HDMI";
 export interface Category { slug: CategorySlug; name: string; tagline: string; icon: LucideIcon; tile: string; }
-export interface Product { id: string; name: string; category: CategorySlug; price: number; oldPrice?: number; rating: number; reviews: number; badge?: string; blurb: string; description: string; image: string; compatibility: Compatibility[]; specs: Record<string,string>; gallery: string[]; }
+export interface Product { id: string; name: string; category: CategorySlug; price: number; oldPrice: number | undefined; rating: number; reviews: number; badge: string | undefined; blurb: string; description: string; image: string; compatibility: Compatibility[]; specs: Record<string,string>; gallery: string[]; }
 
 export const categories: Category[] = [
   { slug:"everyday-gadgets", name:"Everyday Gadgets", tagline:"Clever little fixes for everyday annoyances.", icon:PenTool, tile:"bg-chart-1/10 text-chart-1" },
@@ -46,7 +46,7 @@ const seeds: Seed[] = [
 ].map((r:any[])=>({id:r[0],name:r[1],category:r[2],price:r[3],rating:r[4],reviews:r[5],badge:r[6],blurb:r[7],compatibility:r[8],oldPrice:["hand-warmer","video-doorbell"].includes(r[0])?(r[0]==="hand-warmer"?22.99:109.99):undefined}));
 
 export const products: Product[] = seeds.map((p)=>({
- ...p, image:productImages[p.id], gallery:[productImages[p.id], productImages[p.id], productImages[p.id]],
+ ...p, image:productImages[p.id] ?? "", gallery:[productImages[p.id] ?? "", productImages[p.id] ?? "", productImages[p.id] ?? ""],
  description:p.description ?? `${p.blurb} Designed for reliable daily use, this gshoppy pick combines practical details with a clean, durable finish.`,
  specs:p.specs ?? { "In the box":"Product, quick-start guide", "Warranty":"2 years", "Ships in":"1–2 business days", "Returns":"30 days" },
 }));

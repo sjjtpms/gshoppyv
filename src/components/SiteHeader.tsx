@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ShoppingCart, Zap } from "lucide-react";
 import { categories } from "@/lib/products";
 import { useCart } from "@/lib/cart";
+import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
   const { count, setOpen } = useCart();
@@ -31,10 +32,12 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <button
+        <Button
           onClick={() => setOpen(true)}
           aria-label={`Open cart, ${count} item${count === 1 ? "" : "s"}`}
-          className="relative grid size-10 shrink-0 place-items-center rounded-full border bg-card transition-colors hover:bg-accent"
+          variant="outline"
+          size="icon"
+          className="relative size-10 shrink-0 rounded-full"
         >
           <ShoppingCart className="size-5" />
           {count > 0 && (
@@ -42,7 +45,7 @@ export function SiteHeader() {
               {count > 9 ? "9+" : count}
             </span>
           )}
-        </button>
+        </Button>
       </div>
     </header>
   );

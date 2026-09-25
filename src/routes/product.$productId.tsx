@@ -50,9 +50,9 @@ function ProductPage() {
           </div>
           <div className="mt-3 grid grid-cols-3 gap-3">
             {product.gallery.map((image, index) => (
-              <button key={index} onClick={() => setGalleryIndex(index)} aria-label={`View product image ${index + 1}`} className={cn("overflow-hidden rounded-md border-2 bg-muted", galleryIndex === index ? "border-primary" : "border-transparent")}>
+              <Button key={index} variant="ghost" onClick={() => setGalleryIndex(index)} aria-label={`View product image ${index + 1}`} className={cn("h-auto overflow-hidden rounded-md border-2 bg-muted p-0", galleryIndex === index ? "border-primary" : "border-transparent")}>
                 <img src={image} alt="" loading="lazy" width={180} height={140} className={cn("aspect-[4/3] w-full", imageModes[index])} />
-              </button>
+              </Button>
             ))}
           </div>
         </div>

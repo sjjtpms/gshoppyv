@@ -47,7 +47,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t px-4 py-4 text-center text-xs text-muted-foreground sm:px-6 lg:px-10">
-        © 2026 Voltra. Demo storefront — version 1.
+        © 2026 gshoppy. Demo storefront.
       </div>
     </footer>
   );
