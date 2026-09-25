@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { categories, compatibilityOptions, products, type CategorySlug, type Compatibility } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
@@ -18,6 +18,32 @@ export function CatalogBrowser({ fixedCategory }: { fixedCategory?: CategorySlug
   const [category, setCategory] = useState<string>(fixedCategory ?? "all");
   const [price, setPrice] = useState("all");
   const [compatibility, setCompatibility] = useState<string>("all");
+  const [urlReady, setUrlReady] = useState(false);
+
+  useEffect(() => {
+    const applyUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      setQuery(params.get("q") ?? "");
+      if (!fixedCategory) setCategory(params.get("category") ?? "all");
+      setPrice(params.get("price") ?? "all");
+      setCompatibility(params.get("compatibility") ?? "all");
+      setUrlReady(true);
+    };
+    applyUrl();
+    window.addEventListener("popstate", applyUrl);
+    return () => window.removeEventListener("popstate", applyUrl);
+  }, [fixedCategory]);
+
+  useEffect(() => {
+    if (!urlReady) return;
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (!fixedCategory && category !== "all") params.set("category", category);
+    if (price !== "all") params.set("price", price);
+    if (compatibility !== "all") params.set("compatibility", compatibility);
+    const next = params.size > 0 ? `${window.location.pathname}?${params}` : window.location.pathname;
+    window.history.replaceState(window.history.state, "", next);
+  }, [category, compatibility, fixedCategory, price, query, urlReady]);
 
   const filtered = useMemo(() => products.filter((product) => {
     const text = `${product.name} ${product.blurb} ${product.compatibility.join(" ")}`.toLowerCase();

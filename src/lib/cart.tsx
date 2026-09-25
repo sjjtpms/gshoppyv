@@ -59,7 +59,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setLines((prev) => prev.filter((l) => l.product.id !== productId)),
       setQty: (productId, qty) =>
         setLines((prev) =>
-          qty <= 0
+          !Number.isFinite(qty) || qty <= 0
             ? prev.filter((l) => l.product.id !== productId)
             : prev.map((l) =>
                 l.product.id === productId
