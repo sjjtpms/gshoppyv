@@ -15,6 +15,7 @@ import { CartProvider } from "@/lib/cart";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CartDrawer } from "@/components/CartDrawer";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Button } from "@/components/ui/button";
 
 function NotFoundComponent() {
   return (
@@ -58,15 +59,15 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           home.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
+          <Button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="rounded-full"
           >
             Try again
-          </button>
+          </Button>
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-full border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
@@ -84,14 +85,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Voltra — Gadgets & Accessories Store" },
+      { title: "gshoppy — Gadgets & Accessories Store" },
       {
         name: "description",
         content:
           "Everyday gadgets, phone accessories, projectors, charging gear and smart-home tech.",
       },
-      { name: "author", content: "Voltra" },
-      { property: "og:title", content: "Voltra — Gadgets & Accessories Store" },
+      { name: "author", content: "gshoppy" },
+      { property: "og:title", content: "gshoppy — Gadgets & Accessories Store" },
       {
         property: "og:description",
         content:
@@ -99,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@gshoppy" },
     ],
     links: [
       {
