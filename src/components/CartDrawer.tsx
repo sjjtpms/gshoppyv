@@ -7,8 +7,9 @@ import {
   X,
 } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { formatPrice, tileFor } from "@/lib/products";
+import { formatPrice } from "@/lib/products";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export function CartDrawer() {
   const { isOpen, setOpen, lines, subtotal, setQty, remove, clear } = useCart();
@@ -55,13 +56,15 @@ export function CartDrawer() {
               </span>
             )}
           </div>
-          <button
+          <Button
             onClick={() => setOpen(false)}
             aria-label="Close cart"
-            className="grid size-9 shrink-0 place-items-center rounded-full border bg-card transition-colors hover:bg-accent"
+            variant="outline"
+            size="icon"
+            className="shrink-0 rounded-full"
           >
             <X className="size-4" />
-          </button>
+          </Button>
         </div>
 
         {checkedOut ? (
@@ -71,7 +74,7 @@ export function CartDrawer() {
             </span>
             <h3 className="font-display text-lg font-bold">Order placed!</h3>
             <p className="text-sm text-muted-foreground">
-              Thanks for shopping with Voltra. This is a demo checkout — real
+              Thanks for shopping with gshoppy. This is a demo checkout — real
               payments are coming in the next version.
             </p>
           </div>
@@ -84,62 +87,66 @@ export function CartDrawer() {
             <p className="text-sm text-muted-foreground">
               Browse the store and add a few gadgets you love.
             </p>
-            <button
+            <Button
               onClick={() => setOpen(false)}
-              className="mt-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              className="mt-2 rounded-full"
             >
               Continue shopping
-            </button>
+            </Button>
           </div>
         ) : (
           <>
             <ul className="flex-1 divide-y overflow-y-auto px-5">
               {lines.map(({ product, qty }) => {
-                const Icon = product.icon;
                 return (
                   <li key={product.id} className="flex gap-3 py-4">
-                    <div
-                      className={cn(
-                        "grid size-14 shrink-0 place-items-center rounded-xl",
-                        tileFor(product.category),
-                      )}
-                    >
-                      <Icon className="size-6" strokeWidth={1.5} />
-                    </div>
+                    <img src={product.image} alt="" loading="lazy" width={56} height={72} className="size-14 shrink-0 rounded-md bg-muted object-cover" />
                     <div className="flex min-w-0 flex-1 flex-col">
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-sm font-semibold leading-snug">
                           {product.name}
                         </p>
-                        <button
+                        <Button
                           onClick={() => remove(product.id)}
                           aria-label={`Remove ${product.name}`}
-                          className="shrink-0 text-muted-foreground transition-colors hover:text-destructive"
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
                         >
                           <Trash2 className="size-4" />
-                        </button>
+                        </Button>
                       </div>
                       <p className="mt-0.5 text-sm text-muted-foreground">
                         {formatPrice(product.price)}
                       </p>
                       <div className="mt-auto flex items-center gap-2 pt-2">
-                        <button
+                        <Button
                           onClick={() => setQty(product.id, qty - 1)}
                           aria-label="Decrease quantity"
-                          className="grid size-7 place-items-center rounded-full border bg-card transition-colors hover:bg-accent"
+                          variant="outline"
+                          size="icon"
+                          className="size-8 rounded-full"
                         >
                           <Minus className="size-3.5" />
-                        </button>
-                        <span className="w-6 text-center text-sm font-semibold">
-                          {qty}
-                        </span>
-                        <button
+                        </Button>
+                        <input
+                          type="number"
+                          min={1}
+                          max={99}
+                          value={qty}
+                          onChange={(event) => setQty(product.id, Number(event.target.value))}
+                          aria-label={`Quantity for ${product.name}`}
+                          className="h-8 w-12 rounded-md border bg-background text-center text-sm font-semibold"
+                        />
+                        <Button
                           onClick={() => setQty(product.id, qty + 1)}
                           aria-label="Increase quantity"
-                          className="grid size-7 place-items-center rounded-full border bg-card transition-colors hover:bg-accent"
+                          variant="outline"
+                          size="icon"
+                          className="size-8 rounded-full"
                         >
                           <Plus className="size-3.5" />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </li>
@@ -158,15 +165,17 @@ export function CartDrawer() {
                 Shipping and taxes calculated at checkout. Free shipping over
                 $50.
               </p>
-              <button
+              <Button
                 onClick={() => {
                   setCheckedOut(true);
                   clear();
                 }}
-                className="mt-3 w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                size="lg"
+                className="mt-3 w-full rounded-full"
               >
-                Checkout
-              </button>
+                Secure checkout
+              </Button>
+              <Button variant="ghost" onClick={clear} className="mt-1 w-full text-muted-foreground">Clear cart</Button>
             </div>
           </>
         )}
