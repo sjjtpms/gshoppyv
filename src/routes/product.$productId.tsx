@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
-import { Check, ChevronRight, Minus, Plus, ShieldCheck, ShoppingBag, Star, Truck } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Minus, Plus, ShieldCheck, ShoppingBag, Star, Truck } from "lucide-react";
 import { getCategory, getProduct } from "@/lib/products";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
@@ -30,10 +30,12 @@ function ProductPage() {
   const { add } = useCart();
   const [qty, setQty] = useState(1);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
   if (!product) return null;
   const category = getCategory(product.category);
   const related = products.filter((item) => item.category === product.category && item.id !== product.id).slice(0, 4);
   const imageModes = ["object-cover", "object-cover scale-110", "object-cover scale-125"];
+  const changeGallery = (direction: number) => setGalleryIndex((index) => (index + direction + product.gallery.length) % product.gallery.length);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
@@ -44,13 +46,30 @@ function ProductPage() {
       </nav>
 
       <section className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(360px,.85fr)] lg:gap-14">
-        <div>
-          <div className="overflow-hidden rounded-lg border bg-muted">
-            <img src={product.gallery[galleryIndex]} alt={`${product.name}, view ${galleryIndex + 1}`} width={768} height={768} className={cn("aspect-square w-full", imageModes[galleryIndex])} />
+        <div className="min-w-0">
+          <div
+            className="relative overflow-hidden rounded-lg border bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            tabIndex={0}
+            aria-label={`${product.name} gallery, view ${galleryIndex + 1} of ${product.gallery.length}. Use arrow keys to browse.`}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowRight") { event.preventDefault(); changeGallery(1); }
+              if (event.key === "ArrowLeft") { event.preventDefault(); changeGallery(-1); }
+            }}
+            onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }}
+            onTouchEnd={(event) => {
+              const endX = event.changedTouches[0]?.clientX;
+              if (touchStartX.current !== null && endX !== undefined && Math.abs(endX - touchStartX.current) > 45) changeGallery(endX < touchStartX.current ? 1 : -1);
+              touchStartX.current = null;
+            }}
+          >
+            <img src={product.gallery[galleryIndex]} alt={`${product.name}, view ${galleryIndex + 1}`} width={768} height={768} draggable={false} className={cn("aspect-square w-full select-none transition-transform duration-300 motion-reduce:transition-none", imageModes[galleryIndex])} />
+            <Button variant="outline" size="icon" onClick={() => changeGallery(-1)} aria-label="Previous product view" className="absolute left-3 top-1/2 size-11 -translate-y-1/2 rounded-full bg-card/90 shadow-sm"><ChevronLeft className="size-5" /></Button>
+            <Button variant="outline" size="icon" onClick={() => changeGallery(1)} aria-label="Next product view" className="absolute right-3 top-1/2 size-11 -translate-y-1/2 rounded-full bg-card/90 shadow-sm"><ChevronRight className="size-5" /></Button>
+            <span className="absolute bottom-3 right-3 rounded-full bg-card/90 px-3 py-1 text-xs font-medium">{galleryIndex + 1} / {product.gallery.length}</span>
           </div>
-          <div className="mt-3 grid grid-cols-3 gap-3">
+          <div className="mt-3 grid grid-cols-3 gap-3" aria-label="Product views">
             {product.gallery.map((image, index) => (
-              <Button key={index} variant="ghost" onClick={() => setGalleryIndex(index)} aria-label={`View product image ${index + 1}`} className={cn("h-auto overflow-hidden rounded-md border-2 bg-muted p-0", galleryIndex === index ? "border-primary" : "border-transparent")}>
+              <Button key={index} variant="ghost" onClick={() => setGalleryIndex(index)} aria-label={`View product image ${index + 1}`} aria-current={galleryIndex === index ? "true" : undefined} className={cn("h-auto min-h-14 overflow-hidden rounded-md border-2 bg-muted p-0", galleryIndex === index ? "border-primary" : "border-transparent")}>
                 <img src={image} alt="" loading="lazy" width={180} height={140} className={cn("aspect-[4/3] w-full", imageModes[index])} />
               </Button>
             ))}
