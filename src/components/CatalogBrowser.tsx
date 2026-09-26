@@ -42,7 +42,7 @@ export function CatalogBrowser({ fixedCategory }: { fixedCategory?: CategorySlug
     if (!fixedCategory && category !== "all") params.set("category", category);
     if (price !== "all") params.set("price", price);
     if (compatibility !== "all") params.set("compatibility", compatibility);
-    const next = params.size > 0 ? `${window.location.pathname}?${params}` : window.location.pathname;
+    const next = `${window.location.pathname}${params.size > 0 ? `?${params}` : ""}${window.location.hash}`;
     window.history.replaceState(window.history.state, "", next);
   }, [category, compatibility, fixedCategory, price, query, urlReady]);
 

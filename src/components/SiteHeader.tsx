@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { Search, ShoppingCart, Zap } from "lucide-react";
 import { categories } from "@/lib/products";
 import { useCart } from "@/lib/cart";
@@ -15,13 +15,6 @@ export function SiteHeader() {
     window.addEventListener("popstate", syncSearch);
     return () => window.removeEventListener("popstate", syncSearch);
   }, []);
-
-  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    if (search.trim()) params.set("q", search.trim());
-    window.location.assign(`/${params.size ? `?${params}` : ""}#shop`);
-  };
 
   return (
     <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
@@ -63,11 +56,12 @@ export function SiteHeader() {
           )}
         </Button>
       </div>
-      <form onSubmit={submitSearch} role="search" className="border-t px-4 py-2 sm:hidden">
+      <form method="get" action="/#shop" role="search" className="border-t px-4 py-2 sm:hidden">
         <div className="mx-auto flex h-11 max-w-7xl items-center rounded-md border bg-card focus-within:ring-2 focus-within:ring-ring">
           <Search className="ml-3 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
           <input
             type="search"
+            name="q"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search gadgets"
