@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep product filtering and URL query synchronization in `CatalogBrowser`; this gives home and category collections one consistent browsing behavior.
+- Keep cart quantities in the shared cart provider and display them through `CartDrawer`; this preserves a single subtotal across product pages.

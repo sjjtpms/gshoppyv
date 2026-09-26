@@ -1,15 +1,24 @@
 import { Link } from "@tanstack/react-router";
-import { ShoppingCart, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, ShoppingCart, Zap } from "lucide-react";
 import { categories } from "@/lib/products";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
   const { count, setOpen } = useCart();
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const syncSearch = () => setSearch(new URLSearchParams(window.location.search).get("q") ?? "");
+    syncSearch();
+    window.addEventListener("popstate", syncSearch);
+    return () => window.removeEventListener("popstate", syncSearch);
+  }, []);
 
   return (
     <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
-      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:flex sm:justify-between sm:px-6 lg:px-10">
+      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-2 sm:flex sm:justify-between sm:px-6 sm:py-3 lg:px-10">
         <Link to="/" className="flex min-w-0 items-center gap-2">
           <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
             <Zap className="size-5" />
@@ -47,6 +56,23 @@ export function SiteHeader() {
           )}
         </Button>
       </div>
+      <form method="get" action="/#shop" role="search" className="border-t px-4 py-2 sm:hidden">
+        <div className="mx-auto flex h-11 max-w-7xl items-center rounded-md border bg-card focus-within:ring-2 focus-within:ring-ring">
+          <Search className="ml-3 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <input
+            type="search"
+            name="q"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search gadgets"
+            aria-label="Search gadgets"
+            className="h-full min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground"
+          />
+          <Button type="submit" size="icon" variant="ghost" aria-label="Submit search" className="size-11 shrink-0">
+            <Search className="size-5" />
+          </Button>
+        </div>
+      </form>
     </header>
   );
 }

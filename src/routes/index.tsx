@@ -129,7 +129,7 @@ function Index() {
       </section>
 
       {/* Products */}
-      <section id="shop" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10">
+      <section id="shop" className="mx-auto max-w-7xl scroll-mt-32 px-4 py-12 sm:scroll-mt-20 sm:px-6 lg:px-10">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
