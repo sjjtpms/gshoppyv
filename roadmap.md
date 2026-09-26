@@ -14,3 +14,9 @@
 - [x] Make mobile filters easy to tap and collapse
 - [x] Make product galleries swipeable with clear navigation
 - [x] Verify phone and desktop layouts and interactions
+
+# Indian retail pricing
+
+- [x] Update demo product prices and sale prices to natural rupee amounts
+- [x] Align filter bands and free-shipping messaging with the new prices
+- [x] Verify product, filter, and cart prices in the preview
