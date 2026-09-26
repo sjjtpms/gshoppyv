@@ -19,4 +19,4 @@
 
 - [x] Update demo product prices and sale prices to natural rupee amounts
 - [x] Align filter bands and free-shipping messaging with the new prices
-- [ ] Verify product, filter, and cart prices in the preview
+- [x] Verify product, filter, and cart prices in the preview
