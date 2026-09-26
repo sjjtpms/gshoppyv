@@ -53,8 +53,20 @@ interface CartContextValue {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<CartLine[]>([]);
+  const [lines, setLines] = useState<CartLine[]>(loadStoredLines);
   const [isOpen, setOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored: StoredCartLine[] = lines.map((l) => ({
+        id: l.product.id,
+        qty: l.qty,
+      }));
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(stored));
+    } catch {
+      // storage unavailable (private mode, quota) — cart stays in memory
+    }
+  }, [lines]);
 
   const value = useMemo<CartContextValue>(() => {
     const count = lines.reduce((sum, l) => sum + l.qty, 0);
