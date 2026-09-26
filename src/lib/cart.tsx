@@ -1,11 +1,37 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import type { Product } from "./products";
+import { getProduct, type Product } from "./products";
+
+const CART_STORAGE_KEY = "gshoppy-cart-v1";
+
+interface StoredCartLine {
+  id: string;
+  qty: number;
+}
+
+function loadStoredLines(): CartLine[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((entry: StoredCartLine) => {
+      const product = getProduct(entry?.id);
+      const qty = Math.floor(entry?.qty);
+      if (!product || !Number.isFinite(qty) || qty <= 0) return [];
+      return [{ product, qty: Math.min(99, qty) }];
+    });
+  } catch {
+    return [];
+  }
+}
 
 export interface CartLine {
   product: Product;
@@ -28,7 +54,27 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
+  const [hydrated, setHydrated] = useState(false);
   const [isOpen, setOpen] = useState(false);
+
+  // Restore the saved cart after mount so SSR and first client render match.
+  useEffect(() => {
+    setLines(loadStoredLines());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      const stored: StoredCartLine[] = lines.map((l) => ({
+        id: l.product.id,
+        qty: l.qty,
+      }));
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(stored));
+    } catch {
+      // storage unavailable (private mode, quota) — cart stays in memory
+    }
+  }, [lines]);
 
   const value = useMemo<CartContextValue>(() => {
     const count = lines.reduce((sum, l) => sum + l.qty, 0);
