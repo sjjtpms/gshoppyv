@@ -8,9 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const priceBands = [
   { value: "all", label: "Any price" },
-  { value: "under-25", label: "Under $25" },
-  { value: "25-50", label: "$25–$50" },
-  { value: "over-50", label: "$50+" },
+  { value: "under-25", label: "Under ₹25" },
+  { value: "25-50", label: "₹25–₹50" },
+  { value: "over-50", label: "₹50+" },
 ];
 
 export function CatalogBrowser({ fixedCategory }: { fixedCategory?: CategorySlug }) {

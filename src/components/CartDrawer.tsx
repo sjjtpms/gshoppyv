@@ -163,7 +163,7 @@ export function CartDrawer() {
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 Shipping and taxes calculated at checkout. Free shipping over
-                $50.
+                ₹50.
               </p>
               <Button
                 onClick={() => {

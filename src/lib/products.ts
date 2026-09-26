@@ -52,4 +52,4 @@ export const products: Product[] = seeds.map((p)=>({
 }));
 export function getProduct(id:string){ return products.find(p=>p.id===id); }
 export const compatibilityOptions: Compatibility[]=["Universal","Apple","Android","USB-C","Smart Home","HDMI"];
-export function formatPrice(value:number){ return `$${value.toFixed(2)}`; }
+export function formatPrice(value:number){ return `₹${value.toFixed(2)}`; }
