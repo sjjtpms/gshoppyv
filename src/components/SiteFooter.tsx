@@ -39,7 +39,7 @@ export function SiteFooter() {
         <div className="sm:col-span-2 lg:col-span-1">
           <h3 className="font-display text-sm font-semibold">Support</h3>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li>Free shipping over $50</li>
+            <li>Free shipping over ₹50</li>
             <li>30-day returns</li>
             <li>2-year warranty on all gadgets</li>
           </ul>

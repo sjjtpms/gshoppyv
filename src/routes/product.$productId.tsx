@@ -94,7 +94,7 @@ function ProductPage() {
             </div>
             <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground"><Check className="size-4 text-chart-2" /> In stock and ready to ship</p>
           </div>
-          <div className="grid grid-cols-2 gap-4 py-5 text-sm"><div className="flex gap-2"><Truck className="size-5 text-primary" /><span><strong className="block">Fast delivery</strong><span className="text-muted-foreground">Free over $50</span></span></div><div className="flex gap-2"><ShieldCheck className="size-5 text-primary" /><span><strong className="block">2-year warranty</strong><span className="text-muted-foreground">30-day returns</span></span></div></div>
+          <div className="grid grid-cols-2 gap-4 py-5 text-sm"><div className="flex gap-2"><Truck className="size-5 text-primary" /><span><strong className="block">Fast delivery</strong><span className="text-muted-foreground">Free over ₹50</span></span></div><div className="flex gap-2"><ShieldCheck className="size-5 text-primary" /><span><strong className="block">2-year warranty</strong><span className="text-muted-foreground">30-day returns</span></span></div></div>
         </div>
       </section>
 
