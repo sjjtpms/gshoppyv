@@ -19,6 +19,7 @@ export function CatalogBrowser({ fixedCategory }: { fixedCategory?: CategorySlug
   const [price, setPrice] = useState("all");
   const [compatibility, setCompatibility] = useState<string>("all");
   const [urlReady, setUrlReady] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
     const applyUrl = () => {
@@ -56,34 +57,38 @@ export function CatalogBrowser({ fixedCategory }: { fixedCategory?: CategorySlug
 
   const hasFilters = query !== "" || (!fixedCategory && category !== "all") || price !== "all" || compatibility !== "all";
   const reset = () => { setQuery(""); setCategory(fixedCategory ?? "all"); setPrice("all"); setCompatibility("all"); };
+  const activeFilterCount = Number(!fixedCategory && category !== "all") + Number(price !== "all") + Number(compatibility !== "all");
 
   return (
     <div>
       <div className="rounded-lg border bg-card p-3 shadow-sm sm:p-4">
-        <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
-          <SlidersHorizontal className="size-4 text-primary" />
-          Find your gear
+        <Button variant="outline" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="catalog-filters" className="flex h-12 w-full justify-between text-sm sm:hidden">
+          <span className="flex items-center gap-2"><SlidersHorizontal className="size-4 text-primary" /> Filters {activeFilterCount > 0 && <span className="grid size-5 place-items-center rounded-full bg-primary text-xs text-primary-foreground">{activeFilterCount}</span>}</span>
+          <span className="text-muted-foreground">{filtersOpen ? "Done" : "Show"}</span>
+        </Button>
+        <div className="mb-3 hidden items-center gap-2 text-sm font-semibold sm:flex">
+          <SlidersHorizontal className="size-4 text-primary" /> Find your gear
         </div>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(240px,1.5fr)_repeat(3,minmax(150px,1fr))_auto]">
-          <div className="relative">
+        <div id="catalog-filters" className={`${filtersOpen ? "grid" : "hidden"} mt-3 gap-3 sm:mt-0 sm:grid sm:grid-cols-2 lg:grid-cols-[minmax(240px,1.5fr)_repeat(3,minmax(150px,1fr))_auto]`}>
+          <div className="relative hidden sm:block">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search gadgets..." aria-label="Search products" className="h-10 pl-9" />
           </div>
           {!fixedCategory && (
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="h-10" aria-label="Filter by category"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-12 w-full sm:h-10" aria-label="Filter by category"><SelectValue /></SelectTrigger>
               <SelectContent><SelectItem value="all">All categories</SelectItem>{categories.map((item) => <SelectItem key={item.slug} value={item.slug}>{item.name}</SelectItem>)}</SelectContent>
             </Select>
           )}
           <Select value={price} onValueChange={setPrice}>
-            <SelectTrigger className="h-10" aria-label="Filter by price"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-12 w-full sm:h-10" aria-label="Filter by price"><SelectValue /></SelectTrigger>
             <SelectContent>{priceBands.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
           </Select>
           <Select value={compatibility} onValueChange={setCompatibility}>
-            <SelectTrigger className="h-10" aria-label="Filter by compatibility"><SelectValue placeholder="Compatibility" /></SelectTrigger>
+            <SelectTrigger className="h-12 w-full sm:h-10" aria-label="Filter by compatibility"><SelectValue placeholder="Compatibility" /></SelectTrigger>
             <SelectContent><SelectItem value="all">All compatibility</SelectItem>{compatibilityOptions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent>
           </Select>
-          {hasFilters && <Button variant="ghost" onClick={reset} className="h-10"><X className="size-4" /> Reset</Button>}
+          {hasFilters && <Button variant="ghost" onClick={reset} className="h-12 sm:h-10"><X className="size-4" /> Reset</Button>}
         </div>
       </div>
 
