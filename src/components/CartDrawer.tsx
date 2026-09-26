@@ -7,7 +7,7 @@ import {
   X,
 } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { formatPrice } from "@/lib/products";
+import { formatPrice, freeShippingThreshold } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -163,7 +163,7 @@ export function CartDrawer() {
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 Shipping and taxes calculated at checkout. Free shipping over
-                ₹50.
+                {" "}{formatPrice(freeShippingThreshold)}.
               </p>
               <Button
                 onClick={() => {

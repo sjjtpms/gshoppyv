@@ -11,3 +11,4 @@
 
 - Keep product filtering and URL query synchronization in `CatalogBrowser`; this gives home and category collections one consistent browsing behavior.
 - Keep cart quantities in the shared cart provider and display them through `CartDrawer`; this preserves a single subtotal across product pages.
+- Keep demo product prices, INR formatting, and the free-shipping threshold in `src/lib/products.ts`; this keeps all storefront price displays consistent.

@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, Sparkles, Truck } from "lucide-react";
-import { categories, products } from "@/lib/products";
+import { categories, formatPrice, freeShippingThreshold, products } from "@/lib/products";
 import { CatalogBrowser } from "@/components/CatalogBrowser";
 import { cn } from "@/lib/utils";
 import heroImg from "@/assets/hero.jpg";
@@ -43,7 +43,7 @@ function Index() {
         <div>
           <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
             <Sparkles className="size-3.5 text-primary" />
-            New season drop — free shipping over ₹50
+            New season drop — free shipping over {formatPrice(freeShippingThreshold)}
           </span>
           <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
             Everyday tech that just works.
@@ -71,7 +71,7 @@ function Index() {
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <Truck className="size-4 text-primary" />
-              Free shipping over ₹50
+              Free shipping over {formatPrice(freeShippingThreshold)}
             </span>
             <span className="flex items-center gap-2">
               <ShieldCheck className="size-4 text-primary" />

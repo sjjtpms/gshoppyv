@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const priceBands = [
   { value: "all", label: "Any price" },
-  { value: "under-25", label: "Under ₹25" },
-  { value: "25-50", label: "₹25–₹50" },
-  { value: "over-50", label: "₹50+" },
+  { value: "under-1000", label: "Under ₹1,000" },
+  { value: "1000-2999", label: "₹1,000–₹2,999" },
+  { value: "3000-9999", label: "₹3,000–₹9,999" },
+  { value: "10000-plus", label: "₹10,000+" },
 ];
 
 export function CatalogBrowser({ fixedCategory }: { fixedCategory?: CategorySlug }) {
@@ -51,7 +52,7 @@ export function CatalogBrowser({ fixedCategory }: { fixedCategory?: CategorySlug
     const matchesQuery = text.includes(query.trim().toLowerCase());
     const matchesCategory = (fixedCategory ?? category) === "all" || product.category === (fixedCategory ?? category);
     const matchesCompatibility = compatibility === "all" || product.compatibility.includes(compatibility as Compatibility);
-    const matchesPrice = price === "all" || (price === "under-25" && product.price < 25) || (price === "25-50" && product.price >= 25 && product.price <= 50) || (price === "over-50" && product.price > 50);
+    const matchesPrice = price === "all" || (price === "under-1000" && product.price < 1000) || (price === "1000-2999" && product.price >= 1000 && product.price < 3000) || (price === "3000-9999" && product.price >= 3000 && product.price < 10000) || (price === "10000-plus" && product.price >= 10000);
     return matchesQuery && matchesCategory && matchesCompatibility && matchesPrice;
   }), [category, compatibility, fixedCategory, price, query]);
 
