@@ -1,19 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
+  ArrowLeft,
+  Loader2,
   Minus,
   Plus,
   ShoppingBag,
   Trash2,
   X,
 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { useCart } from "@/lib/cart";
-import { formatPrice, freeShippingThreshold } from "@/lib/products";
+import { formatPrice, freeShippingThreshold, shippingFor } from "@/lib/products";
+import { createCheckout } from "@/lib/checkout.functions";
+import { openCashfreeCheckout } from "@/lib/cashfree-sdk";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function CartDrawer() {
   const { isOpen, setOpen, lines, subtotal, setQty, remove, clear } = useCart();
-  const [checkedOut, setCheckedOut] = useState(false);
+  const [step, setStep] = useState<"cart" | "details">("cart");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const startCheckout = useServerFn(createCheckout);
+  const shipping = shippingFor(subtotal);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -23,8 +34,31 @@ export function CartDrawer() {
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) setCheckedOut(false);
+    if (!isOpen) { setStep("cart"); setError(null); }
   }, [isOpen]);
+
+  async function handlePay(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await startCheckout({
+        data: {
+          name: String(form.get("name") ?? ""),
+          email: String(form.get("email") ?? ""),
+          phone: String(form.get("phone") ?? "").replace(/\D/g, "").slice(-10),
+          items: lines.map((l) => ({ id: l.product.id, qty: l.qty })),
+        },
+      });
+      // Cart is kept here; it's cleared only after the order page verifies payment.
+      await openCashfreeCheckout(res.paymentSessionId, res.mode);
+    } catch (e) {
+      console.error(e);
+      setError("We couldn't start the payment. Check your details and try again.");
+      setSubmitting(false);
+    }
+  }
 
   return (
     <>
@@ -67,17 +101,29 @@ export function CartDrawer() {
           </Button>
         </div>
 
-        {checkedOut ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
-            <span className="grid size-14 place-items-center rounded-full bg-primary/10 text-primary">
-              <ShoppingBag className="size-7" />
-            </span>
-            <h3 className="font-display text-lg font-bold">Order placed!</h3>
-            <p className="text-sm text-muted-foreground">
-              Thanks for shopping with gshoppy. This is a demo checkout — real
-              payments are coming in the next version.
-            </p>
-          </div>
+        {step === "details" && lines.length > 0 ? (
+          <form onSubmit={handlePay} className="flex flex-1 flex-col overflow-y-auto px-5 py-4">
+            <button type="button" onClick={() => setStep("cart")} className="mb-4 inline-flex items-center gap-1 self-start text-sm text-muted-foreground hover:text-foreground">
+              <ArrowLeft className="size-4" /> Back to cart
+            </button>
+            <h3 className="font-display text-lg font-bold">Contact details</h3>
+            <p className="mt-1 text-sm text-muted-foreground">We'll send your order updates here.</p>
+            <div className="mt-4 space-y-3">
+              <div className="space-y-1.5"><Label htmlFor="co-name">Full name</Label><Input id="co-name" name="name" required minLength={2} maxLength={80} autoComplete="name" className="h-11" /></div>
+              <div className="space-y-1.5"><Label htmlFor="co-email">Email</Label><Input id="co-email" name="email" type="email" required maxLength={120} autoComplete="email" className="h-11" /></div>
+              <div className="space-y-1.5"><Label htmlFor="co-phone">Mobile number</Label><Input id="co-phone" name="phone" type="tel" inputMode="numeric" required pattern="(\+91)?[\s-]?[6-9][0-9]{9}" placeholder="98765 43210" autoComplete="tel" className="h-11" /></div>
+            </div>
+            <div className="mt-auto space-y-1 border-t pt-4 text-sm">
+              <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
+              <div className="flex justify-between text-muted-foreground"><span>Shipping</span><span>{shipping ? formatPrice(shipping) : "Free"}</span></div>
+              <div className="flex justify-between font-display text-lg font-bold"><span>Total</span><span>{formatPrice(subtotal + shipping)}</span></div>
+            </div>
+            {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
+            <Button type="submit" size="lg" disabled={submitting} className="mt-3 w-full rounded-full">
+              {submitting ? <><Loader2 className="size-4 animate-spin" /> Opening payment…</> : `Pay ${formatPrice(subtotal + shipping)} with Cashfree`}
+            </Button>
+            <p className="mt-2 text-center text-xs text-muted-foreground">UPI, cards, netbanking & wallets</p>
+          </form>
         ) : lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
             <span className="grid size-14 place-items-center rounded-full bg-muted text-muted-foreground">
@@ -162,14 +208,11 @@ export function CartDrawer() {
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Shipping and taxes calculated at checkout. Free shipping over
-                {" "}{formatPrice(freeShippingThreshold)}.
+                {shipping ? `Shipping ${formatPrice(shipping)} — free over ` : "Free shipping on orders over "}
+                {formatPrice(freeShippingThreshold)}.
               </p>
               <Button
-                onClick={() => {
-                  setCheckedOut(true);
-                  clear();
-                }}
+                onClick={() => setStep("details")}
                 size="lg"
                 className="mt-3 w-full rounded-full"
               >
