@@ -1,4 +1,4 @@
-CREATE TABLE public.orders (
+CREATE TABLE IF NOT EXISTS public.orders (
   id text PRIMARY KEY,
   status text NOT NULL DEFAULT 'created',
   amount numeric(12,2) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE public.orders (
 GRANT ALL ON public.orders TO service_role;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
-CREATE TABLE public.payment_events (
+CREATE TABLE IF NOT EXISTS public.payment_events (
   event_key text PRIMARY KEY,
   order_id text NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
   event_type text NOT NULL,
