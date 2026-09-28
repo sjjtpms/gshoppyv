@@ -14,7 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          amount: number
+          cf_payment_id: string | null
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          items: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          cf_payment_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          items: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          cf_payment_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          items?: Json
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_events: {
+        Row: {
+          event_key: string
+          event_type: string
+          order_id: string
+          payload: Json
+          payment_status: string | null
+          received_at: string
+        }
+        Insert: {
+          event_key: string
+          event_type: string
+          order_id: string
+          payload: Json
+          payment_status?: string | null
+          received_at?: string
+        }
+        Update: {
+          event_key?: string
+          event_type?: string
+          order_id?: string
+          payload?: Json
+          payment_status?: string | null
+          received_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
