@@ -23,7 +23,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Item = { productId?: string; name?: string; quantity?: number; price?: number };
+type Item = { id: string; name: string; price: number; qty: number };
+type OrderItems = { lines?: Item[]; subtotal?: number; shipping?: number };
 type Order = {
   id: string; status: string; amount: number; currency: string; items: unknown;
   customer_name: string; customer_email: string; customer_phone: string;
@@ -116,7 +117,8 @@ function AdminPage() {
     );
   }
 
-  const items = (selected?.items as Item[] | undefined) ?? [];
+  const detail = (selected?.items as OrderItems | undefined) ?? {};
+  const items = detail.lines ?? [];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
@@ -207,11 +209,12 @@ function AdminPage() {
                   <ul className="mt-1 space-y-1">
                     {items.map((it, i) => (
                       <li key={i} className="flex justify-between gap-2">
-                        <span>{it.name ?? it.productId} × {it.quantity ?? 1}</span>
-                        {it.price != null && <span>{formatPrice(it.price * (it.quantity ?? 1))}</span>}
+                        <span>{it.name} × {it.qty}</span>
+                        <span>{formatPrice(it.price * it.qty)}</span>
                       </li>
                     ))}
                   </ul>
+                  {detail.shipping != null && <p className="mt-2 flex justify-between text-muted-foreground"><span>Shipping</span><span>{formatPrice(detail.shipping)}</span></p>}
                 </section>
                 <section>
                   <h3 className="font-semibold text-foreground">Payment history</h3>

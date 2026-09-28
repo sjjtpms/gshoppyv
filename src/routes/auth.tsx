@@ -51,7 +51,7 @@ function AuthPage() {
             options: { emailRedirectTo: `${window.location.origin}/auth` },
           });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     if (mode === "signup") toast.success("Check your email to confirm your account.");
   }
 
