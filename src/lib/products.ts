@@ -53,4 +53,6 @@ export const products: Product[] = seeds.map((p)=>({
 export function getProduct(id:string){ return products.find(p=>p.id===id); }
 export const compatibilityOptions: Compatibility[]=["Universal","Apple","Android","USB-C","Smart Home","HDMI"];
 export const freeShippingThreshold = 2999;
+export const shippingFee = 99;
+export function shippingFor(subtotal:number){ return subtotal <= 0 || subtotal >= freeShippingThreshold ? 0 : shippingFee; }
 export function formatPrice(value:number){ return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value); }
