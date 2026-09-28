@@ -8,6 +8,13 @@
       "when": 1790567464521,
       "tag": "0000_cashfree_orders",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790570525698,
+      "tag": "0001_admin_roles",
+      "breakpoints": true
     }
   ]
 }
